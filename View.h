@@ -1,4 +1,6 @@
-#include <stdio.h>
+#pragma once
+
+//#include <stdio.h>
 
 class View
 {

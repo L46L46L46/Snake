@@ -1,24 +1,28 @@
 #include "Tui.h"
 
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <signal.h>
+using namespace std;
+
+
+function<void(void)> Tui :: onwinch;
 
 void Tui :: clean_screen()
 {
 	printf("\e[2J"); //clean sreen
 };
 
+void Tui :: winch(int n)
+{
+	onwinch();
+};
+
 void Tui :: draw_frame()
 {
+	clean_screen();
 	printf("\e[47m"); //set white background
 
 	//get screen size
 	struct winsize screen_size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &screen_size);
-	//this -> setFixedSize(screen_size.ws_row, screen_size.ws_col);
-	//ioctl(STDOUT_FILENO, TIOCGWINSZ, &screen_size);
 	int hight = screen_size.ws_row - 4;
 	int wight = screen_size.ws_col;
 
@@ -39,7 +43,7 @@ void Tui :: draw_frame()
 	{
 		printf("\n");
 		printf(" ");
-		for (int j = 0; j < wight - 1; j++)
+		for (int j = 0; j < wight - 1 ; j++)
 		{
 			printf("\e[C"); //cursor shift
 		}
@@ -56,12 +60,28 @@ void Tui :: draw_frame()
 	printf("\e[0m"); //set normal background
 }
 
-Tui :: Tui()
+void Tui :: draw_rabbit(pair<int, int> coordinates)
 {
-	clean_screen();
-	draw_frame();
+	printf("\e[%d;%dH", coordinates.second, coordinates.first - 1);
+	printf("\e[42m"); //set green background
+	printf(" ");
+	printf("\e[0m"); //set normal background
+
+//get screen size
+	struct winsize screen_size;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &screen_size);
+	int hight = screen_size.ws_row - 1;
+
+	printf("\e[%d;%dH", hight, 0);
 };
 
+Tui :: Tui()
+{
+	setbuf(stdout, NULL);
+	draw_frame();
+	onwinch = bind(& Tui :: draw_frame, this);
+	signal(SIGWINCH, & Tui :: winch);
+};
 
 Tui :: ~Tui()
 {
