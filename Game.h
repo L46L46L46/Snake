@@ -1,32 +1,76 @@
 #pragma once
 
 #include <utility>
-#include <vector>
+#include <list>
 
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <stdlib.h>
-#include <time.h>
+#include <ctime>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <signal.h>
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+
+#include <stdio.h>
+
+#include <sys/poll.h>
+#include <termios.h>
+
+#define LEFT -1
+#define RIGHT 1
+#define UP -2
+#define DOWN 2
+
+#define SNAKE 42
+#define SNAKE_HEAD 43
 
 using namespace std;
 
-class Game
-{
-	public:
-		Game();
-		pair<int, int> get_vector();
-		~Game();
-
-	//void rubbit();
-	private:
-		vector < pair<int, int> > coordinates_rabbits;
-};
+class View;
 
 class Rabbit
 {
 	public:
-		Rabbit(std :: pair<int, int> coordinates);
+		Rabbit(pair<int, int> coordinates);
+		pair<int, int> return_coordinates();
 		~Rabbit();
+	private:
+		pair<int, int> _coordinates;
 };
 
-//class Snake
+class Snake
+{
+	public:
+		Snake(pair<int, int> snake_head, int wight);
+		void set_direct(int derection);
+		list<pair <int, int>> get_coordinates();
+		int get_direct();
+		void update(pair<int, int> head);
+		~Snake();
+	private:
+		list <pair<int, int>> _coordinates;
+		int direct;
+};
+
+class Game
+{
+	public:
+		Game(View* view);
+		list<pair<int, int>> get_rabbits();
+		list <pair <int, int>> get_snake();
+		void update_snake();
+		//void Tick(View* view);
+		~Game();
+
+	private:
+		View* view;
+		list <Rabbit*> rabbits;
+		Snake* snake;
+		//list <pair<int, int>> _coordinates_rabbits;
+		//void Tick(const View* view);
+		pair<int, int> make_coordinates();
+};
+

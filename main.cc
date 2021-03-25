@@ -1,34 +1,39 @@
 #include "Tui.h"
-//#include "Gui.h"
 #include "Game.h"
 
 #include <iostream>
-//#include <stdio.h>
+
+#define RABBIT 41
+#define SNAKE 42
+#define SNAKE_HEAD 43
+
 using namespace std;
 
 int main()
 {
-
-	//ioctl(STDOUT_FILENO, TIOCGWINSZ, &screen_size);
-	//this -> setFixedSize(screen_size.ws_row, screen_size.ws_col);
-	
+	setbuf(stdout, NULL);
 	//Make_model
 
-	Tui *p = new Tui;
-	
-	//p -> draw_rabbit(make_pair(40, 20));
+	View *paint = new Tui;
+	Game *game = new Game(paint);
 
-	Game *g = new Game;
+	//Get list of rabbits and draw it
+	for(pair<int, int> it : game -> get_rabbits())
+	{
+		paint -> draw_cell(it, RABBIT);
+	}
 
-	p -> draw_rabbit(g -> get_vector());
+	//Get snake coordinates and draw it
+	for(pair<int, int> it : game -> get_snake())
+	{
+		paint -> draw_cell(it, (it != game -> get_snake().front()) * SNAKE + (it == game -> get_snake().front()) * SNAKE_HEAD);
+	}
 
-	int n;
-	cin >> n;
-	//p -> draw();
-	
-	delete g;
-	delete p;
-	return n;
+	paint -> runloop();
+
+	delete game;
+	delete paint;
+	return 0;
 	//чекаем, дали ли нам ключ для графической библиотеки
 	//if ("")
 	//{

@@ -10,23 +10,36 @@
 #include <sys/socket.h>
 #include <signal.h>
 
+#include <sys/poll.h>
+
 #include <functional>
+#include <utility>
+
+#include <list>
+
+#include <termios.h>
 
 using namespace std;
 
-class Tui:View
+class Tui:public View
 {
-	//рамочка
-	void draw_frame();
-	void draw();
-	//void draw_rubbit(pair<x, y>);
-
+private:
 	static function<void(void)> onwinch;
 	static void winch(int n);
-
-	public:
+	
+	bool running;
+	pair<timer_fn, int> timer;
+	list<key_fn> keys;
+	struct termios _termios;
+public:
 	Tui();
-	void clean_screen();
-	void draw_rabbit(pair <int, int> coordinates);
+	void draw_frame();
+	void draw_cell(pair <int, int> coordinates, int collor) const;
+	void clean_cell(pair <int, int> coordinates) const;
+	pair<int, int> get_screen_size() const;
+	void addtimer(timer_fn fun, int interval);
+	void setonkey(key_fn fun);
+	void runloop();
+	void quit();
 	~Tui();
-};
+};//ontimer
