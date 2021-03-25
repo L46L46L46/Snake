@@ -33,8 +33,12 @@ void Tui :: runloop()
 		else
 		{
 			flag = 0;
-			char buf = getchar();
-			//read(0, &buf, 1);
+			char buf;
+			read(0, &buf, 1);
+			if (buf == 'q')
+			{
+				kill(getpid(), 9);
+			}
 			for (auto fun : keys)
 			{
 				fun(buf);
@@ -125,13 +129,13 @@ void Tui :: clean_cell(pair<int, int> coordinates) const
 
 Tui :: Tui()
 {
-//	setbuf(stdout, NULL);
-
-	struct termios term;
-	tcgetattr(0, &term);
-	_termios = term;
-	cfmakeraw(&term);
-	tcsetattr(0, TCSAFLUSH, &term);
+	struct termios newt, _termios;
+	int ch;
+	tcgetattr(STDIN_FILENO, &_termios);
+	newt = _termios;
+	newt.c_lflag &= ~ICANON;
+	newt.c_lflag &= ~ECHO;
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
 	draw_frame();
 	onwinch = bind(&Tui :: draw_frame, this);
@@ -140,6 +144,6 @@ Tui :: Tui()
 
 Tui :: ~Tui()
 {
-	tcsetattr(0, TCSAFLUSH, &_termios);
+	tcsetattr(STDIN_FILENO, TCSANOW, &_termios);
 };
 

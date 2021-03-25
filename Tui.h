@@ -42,4 +42,4 @@ public:
 	void runloop();
 	void quit();
 	~Tui();
-};//ontimer
+};

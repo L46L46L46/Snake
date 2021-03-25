@@ -6,20 +6,6 @@
 
 using namespace std;
 
-int getch()
-{
-	struct termios oldt, newt;
-	int ch;
-	tcgetattr(STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~ICANON;
-	newt.c_lflag &= ~ECHO;
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-		ch = getchar();
-	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-	return ch;
-}
-//
 pair<int, int> Rabbit :: return_coordinates()
 {
 	return _coordinates;
@@ -64,6 +50,7 @@ Snake :: ~Snake()
 {
 };
 
+
 list<pair<int, int>> Game :: get_rabbits()
 {
 	list<pair<int, int>> rabbits_coordinates;
@@ -74,7 +61,7 @@ list<pair<int, int>> Game :: get_rabbits()
 	return rabbits_coordinates;
 }
 
-list<pair<int, int>> Game :: get_snake()
+list<pair<int, int>> Game :: get_snake_coordinates(Snake* snake)
 {
 	return snake -> get_coordinates();
 }
@@ -89,6 +76,11 @@ pair<int, int> Game :: make_coordinates()
 
 };
 
+list<Snake> Game :: get_snake_list()
+{
+	return snakes;
+}
+
 list <pair <int, int>> Snake :: get_coordinates()
 {
 	return _coordinates;
@@ -101,34 +93,51 @@ int Snake :: get_direct()
 
 void Game :: update_snake()
 {
-	list<pair<int, int>> body = snake -> get_coordinates();
-	pair<int, int> head = body.front();
-	switch(snake -> get_direct())
+	for (Snake& snake : snakes)
 	{
-		case RIGHT:
-			head.first++;
-			break;
-		case LEFT:
-			head.first--;
-			break;
-		case UP:
-			head.second++;
-			break;
-		case DOWN:
-			head.second--;
-			break;
+		list<pair<int, int>> body = snake.get_coordinates();
+		pair<int, int> head = body.front();
+		switch(snake.get_direct())
+		{
+			case RIGHT:
+				head.first++;
+				break;
+			case LEFT:
+				head.first--;
+				break;
+			case UP:
+				head.second--;
+				break;
+			case DOWN:
+				head.second++;
+				break;
+		}
+		view -> draw_cell(snake.get_coordinates().front(), SNAKE);
+		view -> draw_cell(head, SNAKE_HEAD);
+		view -> clean_cell(snake.get_coordinates().back());
+		snake.update(head);
 	}
-	view -> draw_cell(snake -> get_coordinates().front(), SNAKE);
-	view -> draw_cell(head, SNAKE_HEAD);
-	view -> clean_cell(snake -> get_coordinates().back());
-	snake -> update(head);
 }
 
 void Snake :: update (pair<int, int> head)
 {
-	//_coordinates.pop_front();
 	_coordinates.push_front(head);
 	_coordinates.pop_back();
+}
+
+Snake& Game :: make_snake()
+{
+	pair<int, int> snake_head = make_coordinates();
+	if (snake_head.first < SNAKE_START_SIZE + 2)
+	{
+		snake_head.first = SNAKE_START_SIZE + 2;
+	}
+	if (snake_head.first > view -> get_screen_size().second - SNAKE_START_SIZE - 1)
+	{
+		snake_head.first = view -> get_screen_size().second - SNAKE_START_SIZE - 1;
+	}
+	snakes.push_back(Snake (snake_head, view -> get_screen_size().second/2));
+	return snakes.back();
 }
 
 Game :: Game(View* _view)
@@ -141,16 +150,6 @@ Game :: Game(View* _view)
 		rabbits.push_back (new Rabbit(make_coordinates()));
 	}
 //make Snake
-	pair<int, int> snake_head = make_coordinates();
-	if (snake_head.first < SNAKE_START_SIZE + 2)
-	{
-		snake_head.first = SNAKE_START_SIZE + 2;
-	}
-	if (snake_head.first > view -> get_screen_size().second - SNAKE_START_SIZE - 1)
-	{
-		snake_head.first = view -> get_screen_size().second - SNAKE_START_SIZE - 1;
-	}
-	snake = new Snake(snake_head, view -> get_screen_size().second/2);
 
 	//подписаться на таймер
 	view -> addtimer(bind(&Game :: update_snake, this), 200);

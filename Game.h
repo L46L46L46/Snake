@@ -60,17 +60,16 @@ class Game
 	public:
 		Game(View* view);
 		list<pair<int, int>> get_rabbits();
-		list <pair <int, int>> get_snake();
+		list<Snake> get_snake_list();
+		list <pair <int, int>> get_snake_coordinates(Snake* snake);
+		Snake* get_snake();
+		Snake& make_snake();
 		void update_snake();
-		//void Tick(View* view);
 		~Game();
-
 	private:
 		View* view;
 		list <Rabbit*> rabbits;
-		Snake* snake;
-		//list <pair<int, int>> _coordinates_rabbits;
-		//void Tick(const View* view);
+		list<Snake> snakes;
 		pair<int, int> make_coordinates();
 };
 

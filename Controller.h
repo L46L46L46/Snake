@@ -9,18 +9,21 @@ using namespace std;
 using namespace std::placeholders;
 
 class Game;
-//class Snake;
-//class Rabbit;
+
+
 class View;
 
 class Controller
 {
 	public:
-		Controller(Snake* s_snake, View* view);
-		void control(int buf);
+		Controller(Game* _game, View* _view, const char* _keys = "ABCD");
+		//void arrow_control(char buf);
+		void letter_control(char key);
 		~Controller();
 		//void Tick();
 	private:
+		const char* keys;
+		Game* game;
 		Snake* snake;
 		View* view;
 };
