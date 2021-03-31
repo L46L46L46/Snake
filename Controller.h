@@ -10,18 +10,11 @@ using namespace std::placeholders;
 
 class Game;
 
-
 class View;
 
 class Controller
 {
 	public:
-		Controller(Game* _game, View* _view, const char* _keys = "ADBC");
-		void letter_control(int key);
+		Controller();
 		~Controller();
-	private:
-		const char* keys;
-		Game* game;
-		Snake* snake;
-		View* view;
 };

@@ -1,6 +1,6 @@
 #include "Tui.h"
 #include "Game.h"
-#include "Controller.h"
+#include "Human.h"
 
 #include <iostream>
 
@@ -24,8 +24,8 @@ int main()
 		paint -> draw_cell(game -> get_rabbit_coordinates(rabbit), RABBIT);
 	}
 
-	Controller h1(game, paint);
-	Controller h2(game, paint, "wasd");
+	Human h1(game, paint);
+	Human h2(game, paint, "wasd");
 
 	//Get snake coordinates and draw it
 	for (Snake& snake : game -> get_snake_list())
