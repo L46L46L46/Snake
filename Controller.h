@@ -16,11 +16,9 @@ class View;
 class Controller
 {
 	public:
-		Controller(Game* _game, View* _view, const char* _keys = "ABCD");
-		//void arrow_control(char buf);
-		void letter_control(char key);
+		Controller(Game* _game, View* _view, const char* _keys = "ADBC");
+		void letter_control(int key);
 		~Controller();
-		//void Tick();
 	private:
 		const char* keys;
 		Game* game;

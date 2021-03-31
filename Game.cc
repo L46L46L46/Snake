@@ -6,7 +6,7 @@
 
 using namespace std;
 
-pair<int, int> Rabbit :: return_coordinates()
+pair<int, int> Rabbit :: get_coordinates()
 {
 	return _coordinates;
 }
@@ -19,7 +19,6 @@ Rabbit :: Rabbit(pair<int, int> get_coordinates)
 Rabbit :: ~Rabbit()
 {
 };
-
 
 void Snake :: set_direct(int derection)
 {
@@ -51,29 +50,22 @@ Snake :: ~Snake()
 };
 
 
-list<pair<int, int>> Game :: get_rabbits()
+pair<int, int> Game :: get_rabbit_coordinates(Rabbit& rabbit)
 {
-	list<pair<int, int>> rabbits_coordinates;
-	for (Rabbit* it : rabbits)
-	{
-		rabbits_coordinates.push_back(it -> return_coordinates());
-	}
-	return rabbits_coordinates;
+	return rabbit.get_coordinates();
 }
 
-list<pair<int, int>> Game :: get_snake_coordinates(Snake* snake)
+list<pair<int, int>> Game :: get_snake_coordinates(Snake& snake)
 {
-	return snake -> get_coordinates();
+	return snake.get_coordinates();
 }
 
 
 pair<int, int> Game :: make_coordinates()
 {
-//net logo model library
 	int x = rand() % (view -> get_screen_size().second - 3) + 3;
 	int y = rand() % (view -> get_screen_size().first - 5) + 3;
 	return make_pair(x, y);
-
 };
 
 list<Snake> Game :: get_snake_list()
@@ -81,10 +73,20 @@ list<Snake> Game :: get_snake_list()
 	return snakes;
 }
 
+list<Rabbit> Game :: get_rabbit_list()
+{
+	return rabbits;
+}
+
 list <pair <int, int>> Snake :: get_coordinates()
 {
 	return _coordinates;
 };
+
+pair<int, int> Snake :: get_snake_head()
+{
+	return _coordinates.front();
+}
 
 int Snake :: get_direct()
 {
@@ -95,8 +97,7 @@ void Game :: update_snake()
 {
 	for (Snake& snake : snakes)
 	{
-		list<pair<int, int>> body = snake.get_coordinates();
-		pair<int, int> head = body.front();
+		pair<int, int> head = snake.get_snake_head();
 		switch(snake.get_direct())
 		{
 			case RIGHT:
@@ -112,7 +113,7 @@ void Game :: update_snake()
 				head.second++;
 				break;
 		}
-		view -> draw_cell(snake.get_coordinates().front(), SNAKE);
+		view -> draw_cell(snake.get_snake_head(), SNAKE);
 		view -> draw_cell(head, SNAKE_HEAD);
 		view -> clean_cell(snake.get_coordinates().back());
 		snake.update(head);
@@ -123,6 +124,13 @@ void Snake :: update (pair<int, int> head)
 {
 	_coordinates.push_front(head);
 	_coordinates.pop_back();
+}
+
+Rabbit& Game :: make_rabbit()
+{
+	pair<int, int> rabbit = make_coordinates();
+	rabbits.push_back(rabbit);
+	return rabbits.back();
 }
 
 Snake& Game :: make_snake()
@@ -147,10 +155,8 @@ Game :: Game(View* _view)
 //make Rabbits
 	for (int i = 0; i < RABBITS_COUNT; i++)
 	{
-		rabbits.push_back (new Rabbit(make_coordinates()));
+		Rabbit& rabbit = make_rabbit();
 	}
-//make Snake
-
 	//подписаться на таймер
 	view -> addtimer(bind(&Game :: update_snake, this), 200);
 };
@@ -159,4 +165,5 @@ Game :: Game(View* _view)
 Game :: ~Game()
 {
 	rabbits.clear();
+	snakes.clear();
 };

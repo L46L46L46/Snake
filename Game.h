@@ -35,7 +35,7 @@ class Rabbit
 {
 	public:
 		Rabbit(pair<int, int> coordinates);
-		pair<int, int> return_coordinates();
+		pair<int, int> get_coordinates();
 		~Rabbit();
 	private:
 		pair<int, int> _coordinates;
@@ -47,6 +47,7 @@ class Snake
 		Snake(pair<int, int> snake_head, int wight);
 		void set_direct(int derection);
 		list<pair <int, int>> get_coordinates();
+		pair<int, int> get_snake_head();
 		int get_direct();
 		void update(pair<int, int> head);
 		~Snake();
@@ -59,16 +60,18 @@ class Game
 {
 	public:
 		Game(View* view);
-		list<pair<int, int>> get_rabbits();
 		list<Snake> get_snake_list();
-		list <pair <int, int>> get_snake_coordinates(Snake* snake);
+		list<Rabbit> get_rabbit_list();
+		list <pair <int, int>> get_snake_coordinates(Snake& snake);
+		pair <int, int> get_rabbit_coordinates(Rabbit& rabbit);
 		Snake* get_snake();
+		Rabbit& make_rabbit();
 		Snake& make_snake();
 		void update_snake();
 		~Game();
 	private:
 		View* view;
-		list <Rabbit*> rabbits;
+		list <Rabbit> rabbits;
 		list<Snake> snakes;
 		pair<int, int> make_coordinates();
 };

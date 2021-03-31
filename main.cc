@@ -19,22 +19,23 @@ int main()
 	Game* game = new Game(paint);
 
 	//Get list of rabbits and draw it
-	for(pair<int, int> it : game -> get_rabbits())
+	for (Rabbit& rabbit : game -> get_rabbit_list())
 	{
-		paint -> draw_cell(it, RABBIT);
+		paint -> draw_cell(game -> get_rabbit_coordinates(rabbit), RABBIT);
 	}
+
+	Controller h1(game, paint);
+	Controller h2(game, paint, "wasd");
 
 	//Get snake coordinates and draw it
 	for (Snake& snake : game -> get_snake_list())
 	{
-		for(pair<int, int> it : game -> get_snake_coordinates(&snake))
+		for(pair<int, int> it : game -> get_snake_coordinates(snake))
 		{
-			paint -> draw_cell(it, (it != game -> get_snake_coordinates(&snake).front()) * SNAKE + (it == game -> get_snake_coordinates(&snake).front()) * SNAKE_HEAD);
+			paint -> draw_cell(it, (it != game -> get_snake_coordinates(snake).front()) * SNAKE + (it == game -> get_snake_coordinates(snake).front()) * SNAKE_HEAD);
 		}
 	}
 
-	Controller h1(game, paint);
-	Controller h2(game, paint, "wsad");
 	paint -> runloop();
 
 	delete paint;
