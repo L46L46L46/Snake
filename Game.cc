@@ -148,10 +148,13 @@ Snake& Game :: make_snake()
 	return snakes.back();
 }
 
+
+
 Game :: Game(View* _view)
 {
 	view = _view;
 	srand(time(NULL));
+
 //make Rabbits
 	for (int i = 0; i < RABBITS_COUNT; i++)
 	{

@@ -1,4 +1,4 @@
-#include "Tui.h"
+#include "View.h"
 #include "Game.h"
 #include "Human.h"
 
@@ -15,7 +15,9 @@ int main()
 	setbuf(stdout, NULL);
 	//Make_model
 
-	View* paint = new Tui;
+	View* paint = View :: get("Gui");
+
+	//View* paint = new Tui;
 	Game* game = new Game(paint);
 
 	//Get list of rabbits and draw it

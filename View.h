@@ -13,6 +13,7 @@ class View
 {
 	public:
 	View();
+	static View* get(const char* tui_or_gui = "Tui");
 	~View();
 
 	virtual void addtimer(timer_fn fun, int interval) = 0;
@@ -26,6 +27,4 @@ class View
 
 	virtual pair<int, int> get_screen_size() const = 0;
 
-//	privat:
-//		pair<timer_fn, int> addtimer_pair;
 };

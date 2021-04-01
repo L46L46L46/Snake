@@ -73,6 +73,9 @@ class Game
 		View* view;
 		list <Rabbit> rabbits;
 		list<Snake> snakes;
+		//list<pair<int, int>> obstacles;
 		pair<int, int> make_coordinates();
+		//void make_obsracles();
+	//	int is_cell_obsracles(pair<int, int> cell);
 };
 

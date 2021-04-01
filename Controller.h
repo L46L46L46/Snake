@@ -4,6 +4,7 @@
 #include "View.h"
 #include <iostream>
 #include <functional>
+#include <math.h>
 
 using namespace std;
 using namespace std::placeholders;
