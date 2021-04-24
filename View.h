@@ -23,8 +23,8 @@ class View
 	virtual void setonkey(key_fn fun) = 0;
 
 	virtual void draw_frame() = 0;
-	virtual void draw_cell(const pair<int, int> coordinates, int color) = 0;
-	virtual void clean_cell(const pair<int, int> coordinates) const = 0;
+	virtual void draw_cell(pair<int, int> coordinates, int color) = 0;
+	virtual void clean_cell(pair<int, int> coordinates) = 0;
 
 	virtual pair<int, int> get_screen_size() const = 0;
 

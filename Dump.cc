@@ -26,7 +26,7 @@ void Dump :: controller()
 {
 	pair<int, int> head = snake -> get_snake_head();
 
-//Eat rabbit
+	make_target();
 	if (head.second == target.second && snake -> get_direct() == DOWN)
 	{
 		snake -> set_direct(RIGHT);
@@ -47,39 +47,21 @@ void Dump :: controller()
 		snake -> set_direct(DOWN);
 	}
 
-	if (game -> get_obstacles(make_pair(head.first, head.second + 1)) == 1 && snake -> get_direct() == DOWN)
+	if (game -> get_obstacles(make_pair(head.first, head.second + 1)) && snake -> get_direct() == DOWN)
 	{
 		snake -> set_direct(RIGHT);
 	}
-	if (game -> get_obstacles(make_pair(head.first, head.second - 1)) == 1 && snake -> get_direct() == UP)
+	else if (game -> get_obstacles(make_pair(head.first, head.second - 1)) && snake -> get_direct() == UP)
 	{
 		snake -> set_direct(LEFT);
 	}
-	if (game -> get_obstacles(make_pair(head.first + 1, head.second)) == 1 && snake -> get_direct() == RIGHT)
+	else if (game -> get_obstacles(make_pair(head.first + 1, head.second)) && snake -> get_direct() == RIGHT)
 	{
 		snake -> set_direct(UP);
 	}
-	if (game -> get_obstacles(make_pair(head.first - 1, head.second)) == 1 && snake -> get_direct() == LEFT)
+	else if (game -> get_obstacles(make_pair(head.first - 1, head.second)) && snake -> get_direct() == LEFT)
 	{
 		snake -> set_direct(DOWN);
-	}
-
-	game -> update_snake();
-	check_shell_is_rabbit();
-}
-
-void Dump :: check_shell_is_rabbit()
-{
-	for (list<Rabbit>::iterator rabbit = game -> get_rabbit_list().begin(); rabbit != game -> get_rabbit_list().end(); )
-	{
-		if (snake -> get_snake_head() == game -> get_rabbit_coordinates(*rabbit))
-		{
-			game -> remove_rabbit(rabbit);
-			if (snake -> get_snake_head() == target)
-			{
-				make_target();
-			}
-		}
 	}
 }
 
@@ -95,8 +77,7 @@ Dump :: Dump(Game* _game, View* _view)
 
 	snake = &game -> make_snake();
 	target = game -> get_rabbit_coordinates(get_near_rabbit());
-	view -> draw_cell(target, 46);
-	view -> addtimer(bind(&Dump :: controller, this), 150);
+	view -> addtimer(bind(&Dump :: controller, this), 100);
 }
 
 Dump :: ~Dump()

@@ -49,6 +49,7 @@ class Snake
 		list<pair <int, int>> get_coordinates();
 		pair<int, int> get_snake_head();
 		int get_direct();
+		void eat_rabbit();
 		void update(pair<int, int> head);
 		~Snake();
 	private:
@@ -60,8 +61,8 @@ class Game
 {
 	public:
 		Game(View* view);
-		list<Snake> get_snake_list();
-		list<Rabbit> get_rabbit_list();
+		list<Snake>& get_snake_list();
+		list<Rabbit>& get_rabbit_list();
 		list <pair <int, int>> get_snake_coordinates(Snake& snake);
 		list<pair<int, int>> get_wall();
 		int get_obstacles(pair<int, int> shell);
@@ -73,6 +74,7 @@ class Game
 		void remove_rabbit(list<Rabbit>::iterator target);
 		~Game();
 	private:
+		void check_shell_is_rabbit(Snake& snake);
 		View* view;
 		list <Rabbit> rabbits;
 		list <Snake> snakes;

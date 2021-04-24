@@ -18,8 +18,16 @@
 #include <list>
 
 #include <termios.h>
+#include <time.h>
+#include <algorithm>
 
 using namespace std;
+
+struct timer{
+	timer_fn fn;
+	int interval;
+	int life_time;
+};
 
 class Tui:public View
 {
@@ -28,14 +36,14 @@ private:
 	static void winch(int n);
 	
 	bool running;
-	pair<timer_fn, int> timer;
+	list<timer> timers;
 	list<key_fn> keys;
 	struct termios _termios;
 public:
 	Tui();
 	void draw_frame();
-	void draw_cell(const pair <int, int> coordinates, int collor);
-	void clean_cell(const pair <int, int> coordinates) const;
+	void draw_cell(pair <int, int> coordinates, int collor);
+	void clean_cell(pair <int, int> coordinates);
 	pair<int, int> get_screen_size() const;
 	void addtimer(timer_fn fun, int interval);
 	void setonkey(key_fn fun);

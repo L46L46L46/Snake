@@ -12,7 +12,7 @@ using namespace std;
 class Gui:public View
 {
 private:
-	list<pair<const char*, const pair<int, int>>> to_print;
+	list<pair<const char*, pair<int, int>>> to_print;
 	pair<timer_fn, int> timer;
 	list<key_fn> keys;
 	sf::Clock clock;
@@ -26,7 +26,7 @@ public:
 
 	void draw_frame();
 	void draw_cell(const pair<int, int> coordinates, int color);
-	void clean_cell(const pair<int, int> coordinates) const;
+	void clean_cell(const pair<int, int> coordinates);
 
 	pair<int, int> get_screen_size() const;	
 	

@@ -62,7 +62,7 @@ void Gui :: runloop()
 	//usleep(500);
 	timer.first();
 
-	for(list<pair<const char*, const pair<int, int>>>::iterator it = to_print.begin(); it != to_print.end(); ++it)
+	for(auto it = to_print.begin(); it != to_print.end(); ++it)
 	{
 		sf :: Vector2f targetSize(30.0f, 30.0f);
 		sf :: Image pic;
@@ -104,7 +104,7 @@ void Gui :: draw_frame()
 	//
 }
 
-void Gui :: draw_cell(const pair<int, int> coordinates, int color)
+void Gui :: draw_cell(pair<int, int> coordinates, int color)
 {
 	switch(color)
 	{
@@ -119,18 +119,10 @@ void Gui :: draw_cell(const pair<int, int> coordinates, int color)
 			break;
 	}
 }
-void Gui :: clean_cell(const pair<int, int> coordinates) const
+void Gui :: clean_cell(pair<int, int> coordinates)
 {
-/*
-	list<pair<const char*, const pair<int, int>>>::const_iterator it = to_print.begin();
-        while(it != to_print.end())
-        {
-                if((*it).second == coordinates)
-                {
-                        to_print.erase(it);
-                        break;
-                }
-        }*/
+
+	to_print.remove_if([coordinates](auto it){return it.second == coordinates;});
 }
 
 pair<int, int> Gui :: get_screen_size() const

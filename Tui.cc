@@ -1,4 +1,5 @@
 #include "Tui.h"
+#include <time.h>
 
 using namespace std;
 
@@ -6,8 +7,11 @@ function<void(void)> Tui :: onwinch;
 
 void Tui :: addtimer (timer_fn fun, int interval)
 {
-	timer.first = fun;
-	timer.second = interval;
+	timer t;
+	t.fn = fun;
+	t.interval = interval;
+	t.life_time = 0;
+	timers.push_back(t);
 }
 
 void Tui :: setonkey(key_fn fun)
@@ -15,24 +19,42 @@ void Tui :: setonkey(key_fn fun)
 	keys.push_back(fun);
 }
 
+bool minfn(const timer& a, const timer& b)
+{
+	return ((a.interval - a.life_time) < (b.interval - b.life_time));
+}
+
+int delta_time(struct timespec first, struct timespec second)
+{
+	return -first.tv_sec*1000 + second.tv_sec*1000 - first.tv_nsec/1000000 + second.tv_nsec/1000000;
+}
 
 void Tui :: runloop()
 {
 	struct pollfd fds = {0, POLL_IN, 0};
-	int interval = timer.second;
 	running = true;
-	int flag = 1;
 	while(running)
 	{
-		int poll_return = poll(&fds, 1, flag * interval);
-		flag = 1;
-		if (poll_return == 0)
+		struct timespec t1, t2;
+		clock_gettime(CLOCK_MONOTONIC, &t1);
+		int interval = min_element(timers.begin(), timers.end(), minfn) -> interval;
+		
+		int poll_return = poll(&fds, 1, interval);
+		clock_gettime(CLOCK_MONOTONIC, &t2);
+		
+		int delta = delta_time(t1, t2);
+		
+		for_each(timers.begin(), timers.end(), [delta](timer& t){t.life_time += delta;});	
+		for_each(timers.begin(), timers.end(), [](timer& t){
+			if (t.life_time >= t.interval)
+			{
+				t.life_time = 0;
+				t.fn();
+			}
+		});
+	
+		if (poll_return != 0)
 		{
-			timer.first();
-		}
-		else
-		{
-			flag = 0;
 			char buf;
 			read(0, &buf, 1);
 			if (buf == 'q')
@@ -75,7 +97,7 @@ void Tui :: draw_frame()
 }
 
 
-void Tui :: draw_cell(const pair<int, int> coordinates, int collor)
+void Tui :: draw_cell(pair<int, int> coordinates, int collor)
 {
 	printf("\e[%d;%dH", coordinates.second, coordinates.first - 1);
 	printf("\e[%dm", collor); //set cell background
@@ -85,7 +107,7 @@ void Tui :: draw_cell(const pair<int, int> coordinates, int collor)
 	printf("\e[%d;%dH", get_screen_size().first - 1, 0);
 };
 
-void Tui :: clean_cell(const pair<int, int> coordinates) const
+void Tui :: clean_cell(pair<int, int> coordinates)
 {
 	printf("\e[%d;%dH", coordinates.second, coordinates.first - 1);
 	printf("\e[0m"); //set normal background

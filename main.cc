@@ -17,7 +17,7 @@ int main()
 	setbuf(stdout, NULL);
 	//Make_model
 
-	View* paint = View :: get("Gui");
+	View* paint = View :: get("Tui");
 
 	Game* game = new Game(paint);
 
@@ -31,7 +31,11 @@ int main()
 		paint -> draw_cell(game -> get_rabbit_coordinates(rabbit), RABBIT);
 	}
 
-	Controller* h1 = Controller :: get(game, paint/*, "Dump"*/);
+	Controller :: get(game, paint, "Dump");
+	Controller :: get(game, paint, "Dump");
+//	Controller :: get(game, paint, "Dump");
+//	Controller :: get(game, paint, "Dump");
+//	Controller :: get(game, paint, "Dump");
 	//Human h2(game, paint, "wasd");
 
 	//Get snake coordinates and draw it

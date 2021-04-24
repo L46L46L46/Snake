@@ -14,7 +14,6 @@ private:
 	Game* game;
 	Snake* snake;
 	View* view;
-	void check_shell_is_rabbit();
 	int distance(pair<int, int> a, pair<int, int> b);
 	Rabbit& get_near_rabbit();
 	pair<int, int> target;

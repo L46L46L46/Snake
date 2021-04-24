@@ -68,7 +68,7 @@ pair<int, int> Game :: make_coordinates()
 	return make_pair(x, y);
 };
 
-list<Snake> Game :: get_snake_list()
+list<Snake>& Game :: get_snake_list()
 {
 	return snakes;
 }
@@ -78,7 +78,7 @@ list<pair<int, int>> Game :: get_wall()
 	return obstacles;
 }
 
-list<Rabbit> Game :: get_rabbit_list()
+list<Rabbit>& Game :: get_rabbit_list()
 {
 	return rabbits;
 }
@@ -96,6 +96,25 @@ pair<int, int> Snake :: get_snake_head()
 int Snake :: get_direct()
 {
 	return direct;
+}
+
+void Snake :: eat_rabbit()
+{
+	_coordinates.push_back(get_snake_head());
+}
+
+void Game :: check_shell_is_rabbit(Snake& snake)
+{
+	for (auto it = get_rabbit_list().begin(); it != get_rabbit_list().end(); ++it)
+	{
+		if (snake.get_snake_head() == get_rabbit_coordinates(*it))
+		{
+			view -> clean_cell(get_rabbit_coordinates(*it));
+			snake.eat_rabbit();
+			remove_rabbit(it);
+			return;
+		}
+	}
 }
 
 void Game :: update_snake()
@@ -118,10 +137,11 @@ void Game :: update_snake()
 				head.second++;
 				break;
 		}
+		view -> clean_cell(snake.get_coordinates().back());
 		view -> draw_cell(snake.get_snake_head(), SNAKE);
 		view -> draw_cell(head, SNAKE_HEAD);
-		view -> clean_cell(snake.get_coordinates().back());
 		snake.update(head);
+		check_shell_is_rabbit(snake);
 	}
 }
 
@@ -177,15 +197,8 @@ int Game :: get_obstacles(pair<int, int> shell)
 
 void Game :: remove_rabbit(list<Rabbit>::iterator target)
 {
-	list<Rabbit>::iterator it = rabbits.begin();
-	while(it != rabbits.end())
-	{
-		if(it == target)
-		{
-			rabbits.erase(it);
-			break;
-		}
-	}
+
+	rabbits.erase(target);
 }
 
 Game :: Game(View* _view)
@@ -210,7 +223,7 @@ Game :: Game(View* _view)
 		Rabbit& rabbit = make_rabbit();
 	}
 	//подписаться на таймер
-	view -> addtimer(bind(&Game :: update_snake, this), 200);
+	view -> addtimer(bind(&Game :: update_snake, this), 100);
 };
 
 
