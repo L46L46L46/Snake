@@ -73,6 +73,11 @@ list<Snake> Game :: get_snake_list()
 	return snakes;
 }
 
+list<pair<int, int>> Game :: get_wall()
+{
+	return obstacles;
+}
+
 list<Rabbit> Game :: get_rabbit_list()
 {
 	return rabbits;
@@ -148,13 +153,57 @@ Snake& Game :: make_snake()
 	return snakes.back();
 }
 
+int Game :: get_obstacles(pair<int, int> shell)
+{
+	for(pair<int, int> it : obstacles)
+	{
+		if (it == shell)
+		{
+			return 1;
+		}
+	}
+	for (Snake& snake : snakes)
+	{
+		for (pair<int, int> it : snake.get_coordinates())
+		{
+			if (it == shell)
+			{
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
 
+void Game :: remove_rabbit(list<Rabbit>::iterator target)
+{
+	list<Rabbit>::iterator it = rabbits.begin();
+	while(it != rabbits.end())
+	{
+		if(it == target)
+		{
+			rabbits.erase(it);
+			break;
+		}
+	}
+}
 
 Game :: Game(View* _view)
 {
 	view = _view;
 	srand(time(NULL));
+//make Obstacles
+	for (int i = 1; i < view -> get_screen_size().second + 2; i++)
+	{
 
+		obstacles.push_back(make_pair(i, 1));
+		obstacles.push_back(make_pair(i, view -> get_screen_size().first - 2));
+	}
+	for (int j = 1; j < view -> get_screen_size().first - 2; j++)
+	{
+		obstacles.push_back(make_pair(2, j));
+		obstacles.push_back(make_pair(view -> get_screen_size().second + 1, j));
+	}
 //make Rabbits
 	for (int i = 0; i < RABBITS_COUNT; i++)
 	{

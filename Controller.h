@@ -15,7 +15,8 @@ class View;
 
 class Controller
 {
-	public:
-		Controller();
-		~Controller();
+public:
+	Controller();
+	static Controller* get(Game* game, View* view, const char* control = "Human");
+	~Controller();
 };

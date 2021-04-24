@@ -71,44 +71,11 @@ pair<int, int> Tui :: get_screen_size() const
 
 void Tui :: draw_frame()
 {
-	clean_screen();
-	printf("\e[47m"); //set white background
-
-	if (get_screen_size().first < 5 or get_screen_size().second < 3)
-	{
-		printf("\e[0m"); //set normal background
-		printf("Screen size too small\n");
-		kill(getpid(), 9);
-	}
-
-	//draw frame
-	printf("\e[0;0H"); //set cursor to the top left
-	for (int i = 0; i < get_screen_size().second; i++)
-	{
-		printf(" ");
-	}
-	for (int i = 0; i < get_screen_size().first - 4; i++)
-	{
-		printf("\n");
-		printf(" ");
-		for (int j = 0; j < get_screen_size().second - 1 ; j++)
-		{
-			printf("\e[C"); //cursor shift
-		}
-		printf(" ");
-	}
-	printf("\n");
-	for(int i = 0; i < get_screen_size().second; i++)
-	{
-		printf(" ");
-	}
-	printf("\n");
-
-	
-	printf("\e[0m"); //set normal background
+	//
 }
 
-void Tui :: draw_cell(pair<int, int> coordinates, int collor) const
+
+void Tui :: draw_cell(const pair<int, int> coordinates, int collor)
 {
 	printf("\e[%d;%dH", coordinates.second, coordinates.first - 1);
 	printf("\e[%dm", collor); //set cell background
@@ -118,7 +85,7 @@ void Tui :: draw_cell(pair<int, int> coordinates, int collor) const
 	printf("\e[%d;%dH", get_screen_size().first - 1, 0);
 };
 
-void Tui :: clean_cell(pair<int, int> coordinates) const
+void Tui :: clean_cell(const pair<int, int> coordinates) const
 {
 	printf("\e[%d;%dH", coordinates.second, coordinates.first - 1);
 	printf("\e[0m"); //set normal background
@@ -130,14 +97,13 @@ void Tui :: clean_cell(pair<int, int> coordinates) const
 Tui :: Tui()
 {
 	struct termios newt, _termios;
-	int ch;
 	tcgetattr(STDIN_FILENO, &_termios);
 	newt = _termios;
 	newt.c_lflag &= ~ICANON;
 	newt.c_lflag &= ~ECHO;
 	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
-	draw_frame();
+	clean_screen();
 	onwinch = bind(&Tui :: draw_frame, this);
 	signal(SIGWINCH, &Tui :: winch);
 };

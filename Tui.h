@@ -34,8 +34,8 @@ private:
 public:
 	Tui();
 	void draw_frame();
-	void draw_cell(pair <int, int> coordinates, int collor) const;
-	void clean_cell(pair <int, int> coordinates) const;
+	void draw_cell(const pair <int, int> coordinates, int collor);
+	void clean_cell(const pair <int, int> coordinates) const;
 	pair<int, int> get_screen_size() const;
 	void addtimer(timer_fn fun, int interval);
 	void setonkey(key_fn fun);

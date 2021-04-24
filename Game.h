@@ -63,19 +63,20 @@ class Game
 		list<Snake> get_snake_list();
 		list<Rabbit> get_rabbit_list();
 		list <pair <int, int>> get_snake_coordinates(Snake& snake);
+		list<pair<int, int>> get_wall();
+		int get_obstacles(pair<int, int> shell);
 		pair <int, int> get_rabbit_coordinates(Rabbit& rabbit);
 		Snake* get_snake();
 		Rabbit& make_rabbit();
 		Snake& make_snake();
 		void update_snake();
+		void remove_rabbit(list<Rabbit>::iterator target);
 		~Game();
 	private:
 		View* view;
 		list <Rabbit> rabbits;
-		list<Snake> snakes;
-		//list<pair<int, int>> obstacles;
+		list <Snake> snakes;
+		list<pair<int, int>> obstacles;
 		pair<int, int> make_coordinates();
-		//void make_obsracles();
-	//	int is_cell_obsracles(pair<int, int> cell);
 };
 

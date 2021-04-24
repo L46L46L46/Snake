@@ -1,9 +1,11 @@
 #include "View.h"
 #include "Game.h"
-#include "Human.h"
+#include "Controller.h"
+
 
 #include <iostream>
 
+#define WALL 47
 #define RABBIT 41
 #define SNAKE 42
 #define SNAKE_HEAD 43
@@ -17,17 +19,20 @@ int main()
 
 	View* paint = View :: get("Gui");
 
-	//View* paint = new Tui;
 	Game* game = new Game(paint);
 
+	for (pair<int, int> it : game -> get_wall())
+	{
+		paint -> draw_cell(it, WALL);
+	}
 	//Get list of rabbits and draw it
 	for (Rabbit& rabbit : game -> get_rabbit_list())
 	{
 		paint -> draw_cell(game -> get_rabbit_coordinates(rabbit), RABBIT);
 	}
 
-	Human h1(game, paint);
-	Human h2(game, paint, "wasd");
+	Controller* h1 = Controller :: get(game, paint/*, "Dump"*/);
+	//Human h2(game, paint, "wasd");
 
 	//Get snake coordinates and draw it
 	for (Snake& snake : game -> get_snake_list())
@@ -40,7 +45,6 @@ int main()
 
 	paint -> runloop();
 
-	delete paint;
 	return 0;
 	//чекаем, дали ли нам ключ для графической библиотеки
 	//if ("")

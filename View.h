@@ -17,13 +17,14 @@ class View
 	~View();
 
 	virtual void addtimer(timer_fn fun, int interval) = 0;
+
 	virtual void runloop() = 0;
 	virtual void quit() = 0;
 	virtual void setonkey(key_fn fun) = 0;
 
 	virtual void draw_frame() = 0;
-	virtual void draw_cell(pair<int, int> coordinates, int color) const = 0;
-	virtual void clean_cell(pair<int, int> coordinates) const = 0;
+	virtual void draw_cell(const pair<int, int> coordinates, int color) = 0;
+	virtual void clean_cell(const pair<int, int> coordinates) const = 0;
 
 	virtual pair<int, int> get_screen_size() const = 0;
 
